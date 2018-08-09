@@ -21,3 +21,11 @@ Copyright 2018
 */
 
 package main
+
+import (
+	"github.com/pivotal-gss/gpmt2/cmd"
+)
+
+func main() {
+	cmd.Execute()
+}
