@@ -1,4 +1,4 @@
-# gpmt2
+# gpmt2  [![Build Status](https://travis-ci.org/pivotal-gss/gpmt2.svg?branch=master)](https://travis-ci.org/pivotal-gss/gpmt2)
 Greenplum Magic Tool 2 - open source rebuild of GPMT
 
 
