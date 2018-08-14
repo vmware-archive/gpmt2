@@ -62,6 +62,4 @@ func SetupLogger()  {
 	} else {
 		log.Debugf("All %s log messages are logged into: %s", toolName, logFilename)
 	}
-
-	log.Infof(logLevel)
 }
