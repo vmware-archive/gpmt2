@@ -16,16 +16,31 @@ import (
 	"fmt"
 	"os"
 
+	log "github.com/Sirupsen/logrus"
+
 	"github.com/spf13/cobra"
+)
+
+// global flag variables
+
+var (
+	verbose bool
 )
 
 func init() {
 	rootCmd.AddCommand(versionCmd)
 	rootCmd.AddCommand(logCollectorCmd)
+	flagsRoot()
 	flagsLogCollector()
 }
 
-var LCFlags LogCollectorFlags
+func flagsRoot() {
+	rootCmd.Flags().BoolVarP(&verbose, "verbose", "v", false, "Debug level logging recorded in gpmt logs")
+}
+
+var (
+	LCFlags LogCollectorFlags
+)
 
 func flagsLogCollector() {
 	logCollectorCmd.Flags().BoolVar(&LCFlags.failedOnly, "failed-segs", false, "Query gp_configuration_history for list of faulted content ids")
@@ -92,4 +107,11 @@ func Execute() {
 		fmt.Println(err)
 		os.Exit(1)
 	}
+	if verbose {
+		log.SetLevel(log.DebugLevel)
+	} else {
+		log.SetLevel(log.ErrorLevel)
+	}
+	log.Debug("test")
+	log.Error("test err")
 }
