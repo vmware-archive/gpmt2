@@ -7,41 +7,37 @@ Copyright 2018
 Licensed under the Apache License, Version 2.0 (the "License")
 
 */
-
-// cobra command line
-
 package cmd
 
 import (
 	"fmt"
 	"os"
 	"github.com/spf13/cobra"
-	log "github.com/Sirupsen/logrus"
 )
 
 // global variables
 var (
-	verbose bool
+	toolName = "gpmt"
 	version = "Version ALPHA 1"
 	LCFlags LogCollectorFlags
+	githubRepo = "https://github.com/pivotal-gss/gpmt2"
 )
 
 // The root CLI.
 var rootCmd = &cobra.Command{
-	Use:   "gpmt",
-	Short: "GPMT - diagnostic and data collection for Greemplum Database",
+	Use:   toolName,
+	Short: "Diagnostic and data collection for Greenplum Database",
 	Long:  "Greenplum Magic Tool is a collection of diagnostic and data collection tools to " +
 		   "assist in troubleshooting issues with Greenplum Database. \n" +
-		   "Documentation and development information is available at: https://github.com/pivotal-gss/gpmt2",
+		   "Documentation and development information is available at: " + githubRepo,
+	PersistentPreRun: func(cmd *cobra.Command, args []string) {
+		// Before running any command setup the logger
+		SetupLogger()
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		// if no argument specified throw the help menu on the screen
 		cmd.Help()
 	},
-}
-
-// The root CLI flags
-func flagsRoot() {
-	rootCmd.Flags().BoolVarP(&verbose, "verbose", "v", false, "Enable debug logging")
 }
 
 // Sub Command: Version
@@ -106,7 +102,6 @@ func flagsLogCollector() {
 func init() {
 	rootCmd.AddCommand(versionCmd)
 	rootCmd.AddCommand(logCollectorCmd)
-	flagsRoot()
 	flagsLogCollector()
 }
 
@@ -116,11 +111,4 @@ func Execute() {
 		fmt.Println(err)
 		os.Exit(1)
 	}
-	if verbose {
-		log.SetLevel(log.DebugLevel)
-	} else {
-		log.SetLevel(log.ErrorLevel)
-	}
-	log.Debug("test")
-	log.Error("test err")
 }
