@@ -1,10 +1,20 @@
-package cmd
+/*
+Greenplum Magic Tool
+
+Authored by Tyler Ramer, Ignacio Elizaga
+Copyright 2018
+
+Licensed under the Apache License, Version 2.0 (the "License")
+
+*/
+package utils
 
 import (
 	"database/sql"
 	_ "github.com/lib/pq"
 	"fmt"
 	"time"
+	"github.com/pivotal-gss/gpmt2/log"
 )
 
 var _db *sql.DB
@@ -12,6 +22,15 @@ var _db *sql.DB
 type MetalScanner struct {
 	valid bool
 	value interface{}
+}
+
+// Database connector struct
+type DbConnector struct {
+	Hostname string
+	Port int
+	Username string
+	Password string
+	Database string
 }
 
 // Scan for any unsigned 8-bit integers or bytes
@@ -61,41 +80,41 @@ func (scanner *MetalScanner) Scan(src interface{}) error {
 }
 
 // Establish a connection to the database.
-func establishConnection() {
+func (db *DbConnector) establishConnection() {
 	connStr := fmt.Sprintf("user=%v password=%v host=%v port=%v dbname=%v sslmode=disable",
-		username, password, hostname, port, database)
-	log.Debugf("Connecting to the database using the connection string: \"%v\"", connStr)
+		db.Username, db.Password, db.Hostname, db.Port, db.Database)
+	log.Debug("Connecting to the database using the connection string: " + connStr)
 	conn , err := sql.Open("postgres", connStr)
 	_db = conn
 	if err != nil {
-		log.Fatalf("Failed to establish a connection to database: %v", err)
+		log.Fatal("Failed to establish a connection to database: " + fmt.Sprint(err))
 	}
 }
 
 // Close the database connection once the query has been executed
-func closeConnection() {
+func (db *DbConnector) closeConnection() {
 	err := _db.Close()
 	if err != nil {
-		log.Warningf("Failed to close database connection: %v", err)
+		log.Warn("Failed to close database connection: " + fmt.Sprint(err))
 	}
 }
 
 // Execute the query that was supplied. We will send the error back to the user
 // so that they can decide if they want to keep the error or exit the code, so
 // no err will be handled here.
-func ExecuteQuery(query string) ([]map[string]interface{}, error) {
+func (db *DbConnector) ExecuteQuery(query string) ([]map[string]interface{}, error) {
 
 	// Make a connection to the database
-	establishConnection()
+	db.establishConnection()
 
 	// close database connection once done
-	defer closeConnection()
+	defer db.closeConnection()
 
 	// Initialize a data array map, which we will return
 	var data []map[string]interface{}
 
 	// Execute the query to the database.
-	log.Debugf("Executing the statement: \"%v\"", query)
+	log.Debug("Executing the statement: " + query)
 	rows, err := _db.Query(query)
 	if err != nil {
 		return data, err
