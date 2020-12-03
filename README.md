@@ -1,3 +1,5 @@
+<h1> VMware has ended active development of this project, this repository will no longer be updated.</h1><br>
+
 # gpmt2  [![Build Status](https://travis-ci.org/pivotal-gss/gpmt2.svg?branch=master)](https://travis-ci.org/pivotal-gss/gpmt2)  [![Go Report Card](https://goreportcard.com/badge/github.com/pivotal-gss/gpmt2)](https://goreportcard.com/report/github.com/pivotal-gss/gpmt2)
 Greenplum Magic Tool 2 - open source rebuild of GPMT
 
